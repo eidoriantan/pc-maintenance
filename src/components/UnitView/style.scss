@@ -1,0 +1,12 @@
+
+.details-view {
+  width: 30rem;
+
+  table td {
+    padding: 8px 0;
+
+    &:first-child {
+      font-weight: bold;
+    }
+  }
+}

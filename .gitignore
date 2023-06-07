@@ -1,0 +1,16 @@
+
+.DS_Store
+
+# dotenv files
+.env
+
+# dependencies
+/node_modules
+
+# production
+/build
+
+# debugs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

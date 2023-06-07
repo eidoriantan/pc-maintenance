@@ -1,0 +1,15 @@
+
+@use "sass:map";
+@import "../../styles/variables";
+
+.login-form {
+  width: 18rem;
+  min-width: 18rem;
+}
+
+@media (max-width: map.get($breakpoints, "lg")) {
+  .login-form {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+}

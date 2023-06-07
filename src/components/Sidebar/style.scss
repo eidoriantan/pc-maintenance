@@ -1,0 +1,44 @@
+
+@use "sass:map";
+@import "../../styles/variables";
+
+.sidebar {
+  min-width: 225px;
+  min-height: calc(100vh - 64px);
+  padding: 24px;
+  background-color: $sidebar-color;
+  border-right: 1px solid $border-color;
+  box-shadow: 0 6px 8px 2px lighten($border-color, 10%);
+  z-index: 20;
+
+  a {
+    display: block;
+    color: $nav-text-color;
+
+    &.active { color: darken($nav-text-color, 40%); }
+    &:hover { color: darken($nav-text-color, 20%); }
+  }
+
+  h3 {
+    font-size: .9rem;
+    font-weight: 600;
+  }
+}
+
+.main {
+  flex-grow: 1;
+}
+
+@media (max-width: map.get($breakpoints, "md")) {
+  .sidebar {
+    position: absolute;
+    top: 64px;
+    left: -300px;
+    min-width: 200px;
+    transition: left .15s ease-in-out;
+
+    &.active {
+      left: 0;
+    }
+  }
+}

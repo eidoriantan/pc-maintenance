@@ -1,0 +1,22 @@
+
+@use "sass:map";
+@import "../../styles/variables";
+
+#form-units-edit, #form-units-operation {
+  max-width: 37.5rem;
+}
+
+#form-units-edit {
+  margin-left: auto;
+  margin-right: 1.5rem;
+}
+
+#form-units-operation {
+  margin-right: auto;
+}
+
+@media (max-width: map.get($breakpoints, "lg")) {
+  #form-units-edit, #form-units-operation {
+    margin: 32px;
+  }
+}

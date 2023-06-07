@@ -1,0 +1,41 @@
+
+@use "sass:map";
+@import "../../styles/variables";
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  height: 64px;
+  border-bottom: 1px solid $border-color;
+  background-color: $primary-color;
+  color: $primary-text-color;
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-btns {
+    height: 24px;
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+}
+
+#sidebar-toggle {
+  padding: 8px;
+}
+
+@media (max-width: map.get($breakpoints, "md")) {
+  .header { padding: 0 16px; }
+
+  #sidebar-toggle {
+    display: initial !important;
+    cursor: pointer;
+  }
+}

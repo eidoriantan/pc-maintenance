@@ -1,0 +1,25 @@
+
+@use "sass:map";
+@import "../../styles/variables";
+
+.search-form {
+  width: 18rem;
+  min-width: 18rem;
+}
+
+@media (max-width: map.get($breakpoints, "lg")) {
+  .search-form {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+}
+
+.details-container {
+  display: flex;
+  flex-direction: column;
+  width: 18rem;
+
+  .details-table td:first-child {
+    font-weight: bold;
+  }
+}
