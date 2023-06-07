@@ -7,6 +7,7 @@ import Dashboard from '../Dashboard';
 import UnitAdd from '../UnitAdd';
 import UnitView from '../UnitView';
 import UnitEdit from '../UnitEdit';
+import Departments from '../Departments';
 import SignOut from '../SignOut';
 import NotFound from '../NotFound';
 
@@ -24,6 +25,8 @@ class App extends React.Component {
             <Route path=":id" element={<UnitView />} />
             <Route path=":id/edit" element={<UnitEdit />} />
           </Route>
+
+          <Route path="departments" element={<Departments />} />
 
           <Route path="signout" element={<SignOut />} />
           <Route path="*" element={<NotFound />} />
