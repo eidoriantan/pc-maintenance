@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 04, 2023 at 04:14 AM
+-- Generation Time: Jun 07, 2023 at 04:29 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -20,6 +20,21 @@ SET time_zone = "+00:00";
 --
 -- Database: `pcmaintenance`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `accounts`
+--
+
+DROP TABLE IF EXISTS `accounts`;
+CREATE TABLE IF NOT EXISTS `accounts` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'User ID',
+  `username` varchar(64) NOT NULL COMMENT 'Username',
+  `password` varchar(72) NOT NULL COMMENT 'Hashed password',
+  `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'User added date',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
