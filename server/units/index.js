@@ -61,12 +61,13 @@ router.get('/filters', asyncWrap(async (req, res) => {
 router.post('/', asyncWrap(async (req, res) => {
   const jwtSecret = process.env.JWT_SECRET
   const auth = req.get('Authorization')
+  let payload = null
 
   try {
     if (!auth.match(/^(Bearer ([\w-]*\.[\w-]*\.[\w-]*))$/i)) throw new Error('Invalid token')
 
     const token = auth.split(' ')[1]
-    jwt.verify(token, jwtSecret)
+    payload = jwt.verify(token, jwtSecret)
   } catch (error) {
     return res.json({
       success: false,
@@ -74,6 +75,7 @@ router.post('/', asyncWrap(async (req, res) => {
     })
   }
 
+  const username = payload.username
   const department = req.body.department
   const area = req.body.area
   const status = req.body.status
@@ -96,12 +98,22 @@ router.post('/', asyncWrap(async (req, res) => {
     return
   }
 
-  const cols = ['dept_id', 'area', 'status']
+  const usersResults = await database.query('SELECT id FROM `accounts` WHERE `username`=?', [username])
+  if (usersResults.length === 0) {
+    res.json({
+      success: false,
+      message: 'Invalid user'
+    })
+    return
+  }
+
+  const userid = usersResults[0].id
+  const cols = ['dept_id', 'area', 'status', 'added_by']
   const colsStr = cols.map(col => `\`${col}\``).join(', ')
   const inserts = []
   const insert = (new Array(cols.length)).fill('?', 0, cols.length).join(', ')
   const inputs = []
-  const input = [department, area, status]
+  const input = [department, area, status, userid]
 
   for (let i = 0; i < quantity; i++) {
     inserts.push('(' + insert + ')')
