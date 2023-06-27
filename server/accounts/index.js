@@ -60,6 +60,13 @@ router.post('/', asyncWrap(async (req, res) => {
     })
   }
 
+  if (password.length < 8) {
+    return res.json({
+      success: false,
+      message: 'Password must contain atleast 8 characters'
+    })
+  }
+
   const hashed = await bcrypt.hash(password, 10)
   await database.query('INSERT INTO accounts (username, password) VALUES (?, ?)', [username, hashed])
 
