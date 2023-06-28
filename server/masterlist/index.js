@@ -106,7 +106,7 @@ router.get('/', asyncWrap(async (req, res) => {
           verticalAlign: VerticalAlign.CENTER
         }),
         new TableCell({
-          children: [new Paragraph(unit.fixed ? 'Yes' : 'No')],
+          children: [new Paragraph(unit.fixed)],
           verticalAlign: VerticalAlign.CENTER
         }),
         new TableCell({
