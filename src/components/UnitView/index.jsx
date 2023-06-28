@@ -18,6 +18,8 @@ class UnitView extends React.Component {
     this.state = {
       department: '',
       area: '',
+      maker: '',
+      fixed: 0,
       status: '',
       removed: 0,
       operations: []
@@ -39,6 +41,8 @@ class UnitView extends React.Component {
       this.setState({
         department: unit.dept_name,
         area: unit.area,
+        maker: unit.maker,
+        fixed: unit.fixed,
         status: unit.status,
         removed: unit.removed
       });
@@ -85,6 +89,16 @@ class UnitView extends React.Component {
                   <tr>
                     <td>Status:</td>
                     <td>{ this.state.status }</td>
+                  </tr>
+
+                  <tr>
+                    <td>Maker/Supplier</td>
+                    <td>{ this.state.maker }</td>
+                  </tr>
+
+                  <tr>
+                    <td>Fixed Asset:</td>
+                    <td>{ this.state.fixed ? 'Yes' : 'No' }</td>
                   </tr>
                 </tbody>
               </table>

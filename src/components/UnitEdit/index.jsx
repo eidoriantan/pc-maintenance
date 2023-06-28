@@ -22,6 +22,8 @@ class UnitEdit extends React.Component {
       submitting: false,
       department: '',
       area: '',
+      maker: '',
+      fixed: 0,
       status: '',
       removed: 0,
       added: '',
@@ -72,6 +74,8 @@ class UnitEdit extends React.Component {
     this.setState({
       department: unit.dept_id.toString(),
       area: unit.area,
+      maker: unit.maker,
+      fixed: unit.fixed,
       status: unit.status,
       removed: unit.removed
     });
@@ -80,7 +84,12 @@ class UnitEdit extends React.Component {
   handleInput (event) {
     const state = this.state;
     const target = event.target;
-    state[target.name] = target.value;
+    if (target.type === 'checkbox') {
+      state[target.name] = target.checked;
+    } else {
+      state[target.name] = target.value;
+    }
+
     this.setState({ state });
   }
 
@@ -100,6 +109,8 @@ class UnitEdit extends React.Component {
     const response = await axios.post(form.action, {
       department: this.state.department,
       area: this.state.area,
+      maker: this.state.maker,
+      fixed: this.state.fixed ? 1 : 0,
       status: this.state.status
     }, {
       headers: { Authorization: `Bearer ${token}` }
@@ -173,11 +184,12 @@ class UnitEdit extends React.Component {
         <div className="d-flex d-lg-block p-4">
           <div id="form-units-edit">
             <div className="d-flex flex-space-between mb-2">
-              <h3>Edit PC Unit ID: { unitId }</h3>
+              <h3>Edit Unit ID: { unitId }</h3>
               <div>
-                <NavLink to={`/unit/${unitId}`} className="btn mr-2" role="button">View</NavLink>
-                <a href="#" className="btn btn-danger" role="button" onClick={window.close}>
-                  <XIcon width={16} height={16} fill="currentColor" className="fa mr-2" /> Close
+                <NavLink to={`/unit/${unitId}`} className="btn btn-sm mr-1" role="button">View</NavLink>
+
+                <a href="#" className="btn btn-sm btn-danger" role="button" onClick={window.close}>
+                  <XIcon width={12} height={12} fill="currentColor" className="fa mr-1" /> Close
                 </a>
               </div>
             </div>
@@ -198,6 +210,16 @@ class UnitEdit extends React.Component {
                   <div className="form-group mb-3">
                     <label htmlFor="unit-edit-status">Status:</label>
                     <input type="text" id="unit-edit-status" name="status" value={this.state.status} placeholder="Operational, Non-Operational, Stand-by" autoComplete="off" onChange={this.handleInput} required />
+                  </div>
+
+                  <div className="form-group mb-3">
+                    <label htmlFor="unit-edit-maker">Maker/Supplier</label>
+                    <input type="text" id="unit-edit-maker" name="maker" value={this.state.maker} placeholder="Maker/Supplier" autoComplete="off" onChange={this.handleInput} required />
+                  </div>
+
+                  <div className="form-group form-check mb-3">
+                    <input type="checkbox" id="unit-edit-fixed" name="fixed" checked={this.state.fixed} onChange={this.handleInput} />
+                    <label htmlFor="unit-edit-fixed">Fixed Asset</label>
                   </div>
                 </div>
               </div>

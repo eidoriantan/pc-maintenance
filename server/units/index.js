@@ -80,8 +80,10 @@ router.post('/', asyncWrap(async (req, res) => {
   const area = req.body.area
   const status = req.body.status
   const quantity = req.body.quantity
+  const maker = req.body.maker
+  const fixed = req.body.fixed
 
-  if (!department || !area || !status || !quantity) {
+  if (!department || !area || !status || !quantity || !maker || typeof fixed !== 'number') {
     res.json({
       success: false,
       message: 'Invalid parameters'
@@ -98,7 +100,7 @@ router.post('/', asyncWrap(async (req, res) => {
     return
   }
 
-  const usersResults = await database.query('SELECT id FROM `accounts` WHERE `username`=?', [username])
+  const usersResults = await database.query('SELECT `id` FROM `accounts` WHERE `username`=?', [username])
   if (usersResults.length === 0) {
     res.json({
       success: false,
@@ -108,12 +110,12 @@ router.post('/', asyncWrap(async (req, res) => {
   }
 
   const userid = usersResults[0].id
-  const cols = ['dept_id', 'area', 'status', 'added_by']
+  const cols = ['dept_id', 'area', 'maker', 'fixed', 'status', 'added_by']
   const colsStr = cols.map(col => `\`${col}\``).join(', ')
   const inserts = []
   const insert = (new Array(cols.length)).fill('?', 0, cols.length).join(', ')
   const inputs = []
-  const input = [department, area, status, userid]
+  const input = [department, area, maker, fixed, status, userid]
 
   for (let i = 0; i < quantity; i++) {
     inserts.push('(' + insert + ')')

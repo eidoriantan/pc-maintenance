@@ -21,7 +21,9 @@ class UnitAdd extends React.Component {
       department: '',
       area: '',
       status: '',
-      quantity: 0
+      quantity: 0,
+      maker: '',
+      fixed: false
     };
 
     this.handleInput = this.handleInput.bind(this);
@@ -69,7 +71,12 @@ class UnitAdd extends React.Component {
   handleInput (event) {
     const state = this.state;
     const target = event.target;
-    state[target.name] = target.value;
+    if (target.type === 'checkbox') {
+      state[target.name] = target.checked;
+    } else {
+      state[target.name] = target.value;
+    }
+
     this.setState({ state });
   }
 
@@ -90,7 +97,9 @@ class UnitAdd extends React.Component {
       department: this.state.department,
       area: this.state.area,
       status: this.state.status,
-      quantity: this.state.quantity
+      quantity: this.state.quantity,
+      maker: this.state.maker,
+      fixed: this.state.fixed ? 1 : 0
     }, {
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -107,7 +116,9 @@ class UnitAdd extends React.Component {
         department: '',
         area: '',
         status: '',
-        quantity: 0
+        quantity: 0,
+        maker: '',
+        fixed: false
       });
     } else {
       this.setState({
@@ -146,6 +157,16 @@ class UnitAdd extends React.Component {
               <div className="form-group mb-3">
                 <label htmlFor="unit-add-quantity">Quantity:</label>
                 <input type="number" id="unit-add-quantity" name="quantity" value={this.state.quantity} placeholder="1" autoComplete="off" onChange={this.handleInput} required />
+              </div>
+
+              <div className="form-group mb-2">
+                <label htmlFor="unit-add-maker">Maker/Supplier</label>
+                <input type="text" id="unit-add-maker" name="maker" value={this.state.maker} placeholder="Maker/Supplier" autoComplete="off" onChange={this.handleInput} required />
+              </div>
+
+              <div className="form-group form-check mb-2">
+                <input type="checkbox" id="unit-add-fixed" name="fixed" checked={this.state.fixed} onChange={this.handleInput} />
+                <label htmlFor="unit-add-fixed">Fixed Asset</label>
               </div>
             </div>
           </div>

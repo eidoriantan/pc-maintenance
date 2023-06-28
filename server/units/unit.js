@@ -23,7 +23,7 @@ router.get('/:id', asyncWrap(async (req, res) => {
   }
 
   const unitId = req.params.id
-  const query = 'SELECT `units`.*,`departments`.`name` AS `dept_name` FROM `units` JOIN `departments` ON `departments`.`id`=`units`.`dept_id` WHERE `units`.`id`=?'
+  const query = 'SELECT `units`.*, `departments`.`name` AS `dept_name` FROM `units` JOIN `departments` ON `departments`.`id`=`units`.`dept_id` WHERE `units`.`id`=?'
   const units = await database.query(query, [unitId])
   res.json({
     success: true,
@@ -78,9 +78,11 @@ router.post('/:id', asyncWrap(async (req, res) => {
   const unitId = req.params.id
   const department = req.body.department
   const area = req.body.area
+  const maker = req.body.maker
+  const fixed = req.body.fixed
   const status = req.body.status
 
-  if (!department || !area || !status) {
+  if (!department || !area || !status || !maker || typeof fixed !== 'number') {
     res.json({
       success: false,
       message: 'Invalid parameters'
@@ -118,6 +120,16 @@ router.post('/:id', asyncWrap(async (req, res) => {
   if (unit.area !== area) {
     sets.push('`area`=?')
     values.push(area)
+  }
+
+  if (unit.maker !== maker) {
+    sets.push('`maker`=?')
+    values.push(maker)
+  }
+
+  if (unit.fixed !== fixed) {
+    sets.push('`fixed`=?')
+    values.push(fixed)
   }
 
   if (unit.status !== status) {
@@ -163,7 +175,7 @@ router.get('/:id/operations', asyncWrap(async (req, res) => {
   const order = req.query.order
 
   const orderSql = order === 'asc' ? '' : ' ORDER BY `date_end` DESC'
-  const units = await database.query('SELECT `units`.*,`departments`.`name` AS `dept_name` FROM `units` JOIN `departments` ON `departments`.`id`=`units`.`dept_id` WHERE `units`.`id`=?', [unitId])
+  const units = await database.query('SELECT `units`.*, `departments`.`name` AS `dept_name` FROM `units` JOIN `departments` ON `departments`.`id`=`units`.`dept_id` WHERE `units`.`id`=?', [unitId])
   if (units.length === 0) {
     res.json({
       success: false,
