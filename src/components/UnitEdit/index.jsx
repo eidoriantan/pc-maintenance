@@ -23,6 +23,7 @@ class UnitEdit extends React.Component {
       department: '',
       area: '',
       status: '',
+      removed: 0,
       added: '',
       addingError: '',
       adding: false,
@@ -71,7 +72,8 @@ class UnitEdit extends React.Component {
     this.setState({
       department: unit.dept_id.toString(),
       area: unit.area,
-      status: unit.status
+      status: unit.status,
+      removed: unit.removed
     });
   }
 
@@ -164,6 +166,8 @@ class UnitEdit extends React.Component {
     if (token === null) return <Navigate to="/login" />;
 
     const unitId = this.props.params.id;
+    if (this.state.removed === 1) return <Navigate to={`/unit/${unitId}`} />;
+
     return (
       <Sidebar links={links}>
         <div className="d-flex d-lg-block p-4">

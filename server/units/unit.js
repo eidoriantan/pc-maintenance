@@ -32,6 +32,33 @@ router.get('/:id', asyncWrap(async (req, res) => {
   })
 }))
 
+router.delete('/:id', asyncWrap(async (req, res) => {
+  const jwtSecret = process.env.JWT_SECRET
+  const auth = req.get('Authorization')
+
+  try {
+    if (!auth.match(/^(Bearer ([\w-]*\.[\w-]*\.[\w-]*))$/i)) throw new Error('Invalid token')
+
+    const token = auth.split(' ')[1]
+    jwt.verify(token, jwtSecret)
+  } catch (error) {
+    return res.json({
+      success: false,
+      message: 'Invalid token'
+    })
+  }
+
+  const unitId = req.params.id
+  await database.query('UPDATE `units` SET `removed`=1 WHERE id=?', [unitId])
+  const query = 'INSERT INTO `operations` (`unit_id`, `operation`, `description`, `date_start`, `date_end`) VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)'
+  await database.query(query, [unitId, 4, ''])
+
+  res.json({
+    success: true,
+    message: 'No errors.'
+  })
+}))
+
 router.post('/:id', asyncWrap(async (req, res) => {
   const jwtSecret = process.env.JWT_SECRET
   const auth = req.get('Authorization')

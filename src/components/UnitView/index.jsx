@@ -19,6 +19,7 @@ class UnitView extends React.Component {
       department: '',
       area: '',
       status: '',
+      removed: 0,
       operations: []
     };
   }
@@ -38,7 +39,8 @@ class UnitView extends React.Component {
       this.setState({
         department: unit.dept_name,
         area: unit.area,
-        status: unit.status
+        status: unit.status,
+        removed: unit.removed
       });
     }
   }
@@ -54,9 +56,11 @@ class UnitView extends React.Component {
           <div className="d-flex flex-space-between mb-2">
             <h3>Viewing PC Unit ID: { unitId }</h3>
             <div>
-              <NavLink to={`/unit/${unitId}/edit`} className="btn mr-2" role="button">
-                <PenIcon width={16} height={16} fill="currentColor" className="fa mr-1" /> Edit
-              </NavLink>
+              { this.state.removed === 0 &&
+                <NavLink to={`/unit/${unitId}/edit`} className="btn mr-2" role="button">
+                  <PenIcon width={16} height={16} fill="currentColor" className="fa mr-1" /> Edit
+                </NavLink>
+              }
 
               <a href="#" className="btn btn-danger" role="button" onClick={window.close}>
                 <XIcon width={16} height={16} fill="currentColor" className="fa mr-1" /> Close

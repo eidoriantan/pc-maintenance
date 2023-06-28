@@ -1,12 +1,11 @@
 
 import React from 'react';
 import { Navigate, NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import $ from 'jquery';
 
 import Pagination from '../Pagination';
-import Sidebar from '../Sidebar';
-import { links } from '../DashboardUser/navigation';
 import selectize from '../../utils/selectize';
 
 import MagnifyingGlassIcon from '../../assets/svgs/magnifying-glass.svg';
@@ -23,6 +22,7 @@ class SearchForm extends React.Component {
       department: '',
       area: '',
       status: '',
+      removed: '',
       results: [],
       pagination: {
         key: 0,
@@ -36,6 +36,7 @@ class SearchForm extends React.Component {
     this.handleInput = this.handleInput.bind(this);
     this.resetForm = this.resetForm.bind(this);
     this.changePage = this.changePage.bind(this);
+    this.deleteUnit = this.deleteUnit.bind(this);
   }
 
   async componentDidMount () {
@@ -76,6 +77,21 @@ class SearchForm extends React.Component {
     }), this);
 
     selectize('#search-status', statuses, this);
+
+    selectize('#search-removed', [
+      {
+        text: 'Existing Units',
+        value: '0',
+        disabled: false,
+        $order: 1
+      },
+      {
+        text: 'Removed Units',
+        value: '1',
+        disabled: false,
+        $order: 2
+      }
+    ], this);
   }
 
   async handleSearch (event) {
@@ -94,6 +110,7 @@ class SearchForm extends React.Component {
     query.set('department', this.state.department);
     query.set('area', this.state.area);
     query.set('status', this.state.status);
+    query.set('removed', this.state.removed);
 
     const response = await axios.get(`${form.action}?${query.toString()}`, {
       headers: { Authorization: `Bearer ${token}` }
@@ -135,7 +152,8 @@ class SearchForm extends React.Component {
     this.setState({
       department: '',
       area: '',
-      status: ''
+      status: '',
+      removed: ''
     });
   }
 
@@ -143,6 +161,42 @@ class SearchForm extends React.Component {
     const state = this.state;
     state.pagination.page = page;
     this.setState(state);
+  }
+
+  deleteUnit (id) {
+    return async (event) => {
+      event.preventDefault();
+
+      const token = localStorage.getItem('token');
+      if (token === null) return;
+
+      const response = await axios.delete(`/api/units/unit/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      const data = response.data;
+      if (data.success) {
+        const results = [];
+        for (let i = 0; i < this.state.results.length; i++) {
+          const result = this.state.results[i];
+          if (result.id === id) result.removed = 1;
+          results.push(result);
+        }
+
+        this.setState({
+          results,
+          pagination: {
+            key: this.state.pagination.key + 1,
+            page: 0,
+            total: Math.ceil(results.length / this.limit)
+          }
+        });
+      } else {
+        this.setState({
+          error: data.message
+        });
+      }
+    }
   }
 
   render () {
@@ -181,7 +235,7 @@ class SearchForm extends React.Component {
               </tr>
 
               <tr>
-                <td>Status:</td>
+                <td>Condition:</td>
                 <td>{ unit.status }</td>
               </tr>
             </tbody>
@@ -190,67 +244,88 @@ class SearchForm extends React.Component {
           <div className="flex-1"></div>
           <div className="mt-2">
             <NavLink to={`/unit/${unit.id}`} target="_blank" className="btn mr-2" role="button">View</NavLink>
-            <NavLink to={`/unit/${unit.id}/edit`} target="_blank" className="btn btn-light" role="button">
-              <PenIcon width={17} height={17} fill="currentColor" className="fa mr-1" /> Edit
-            </NavLink>
+            { unit.removed
+                ? 'Removed'
+                : (
+                    <React.Fragment>
+                      <NavLink to={`/unit/${unit.id}/edit`} target="_blank" className="btn mr-2 btn-light" role="button">
+                        <PenIcon width={17} height={17} fill="currentColor" className="fa mr-1" /> Edit
+                      </NavLink>
+                      { this.props.admin &&
+                      <button type="button" className="btn btn-danger mr-2" onClick={this.deleteUnit(unit.id)}>Delete</button>
+                      }
+                    </React.Fragment>
+                  )
+            }
           </div>
         </div>
       );
     }
 
     return (
-      <Sidebar links={links}>
-        <div className="d-flex flex-baseline d-lg-block p-4">
-          <form action="/api/search" method="get" className="search-form box p-4" onSubmit={this.handleSearch}>
-            <h4>Filter PC Units</h4>
-            <div className="form-group mb-2">
-              <label htmlFor="search-department">Department:</label>
-              <select id="search-department" name="department" defaultValue="" data-selectize></select>
-            </div>
+      <div className="d-flex flex-baseline d-lg-block p-4">
+        <form action="/api/search" method="get" className="search-form box p-4" onSubmit={this.handleSearch}>
+          <h4>Filter PC Units</h4>
+          <div className="form-group mb-2">
+            <label htmlFor="search-department">Department:</label>
+            <select id="search-department" name="department" defaultValue="" data-selectize></select>
+          </div>
 
-            <div className="form-group mb-2">
-              <label htmlFor="search-area">Area:</label>
-              <input type="text" id="search-area" name="area" value={this.state.area} autoComplete="off" onChange={this.handleInput} />
-            </div>
+          <div className="form-group mb-2">
+            <label htmlFor="search-area">Area:</label>
+            <input type="text" id="search-area" name="area" value={this.state.area} autoComplete="off" onChange={this.handleInput} />
+          </div>
 
-            <div className="form-group mb-2">
-              <label htmlFor="search-status">Status:</label>
-              <select id="search-status" name="status" defaultValue="" data-selectize></select>
-            </div>
+          <div className="form-group mb-2">
+            <label htmlFor="search-status">Condition:</label>
+            <select id="search-status" name="status" defaultValue="" data-selectize></select>
+          </div>
 
-            { this.state.error !== '' && <div className="box box-error d-block mb-2">{ this.state.error }</div> }
+          <div className="form-group mb-2">
+            <label htmlFor="search-removed">Status:</label>
+            <select id="search-removed" name="removed" defaultValue="" data-selectize></select>
+          </div>
 
-            <div className="form-actions">
-              <button type="submit" className="btn" disabled={this.state.searching}>
-                <MagnifyingGlassIcon width={17} height={17} fill="currentColor" className="fa mr-2" />
-                { this.state.searching ? 'Searching...' : 'Search' }
-              </button>
+          { this.state.error !== '' && <div className="box box-error d-block mb-2">{ this.state.error }</div> }
 
-              <button type="reset" className="btn btn-light" onClick={this.resetForm}>Reset</button>
-            </div>
-          </form>
+          <div className="form-actions">
+            <button type="submit" className="btn" disabled={this.state.searching}>
+              <MagnifyingGlassIcon width={17} height={17} fill="currentColor" className="fa mr-2" />
+              { this.state.searching ? 'Searching...' : 'Search' }
+            </button>
 
-          <div className="d-flex flex-column flex-1 align-self-start mx-3">
-            <div className="mb-2 mx-1">
-              <h3>Search Results</h3>
-              <p>
-                { this.state.results.length > 0 ? this.state.results.length + ' result(s)' : '' }
-                { this.state.results.length > 0 ? `: Showing page ${page + 1} of ${totalPages}` : '' }
-              </p>
-            </div>
+            <button type="reset" className="btn btn-light" onClick={this.resetForm}>Reset</button>
+          </div>
+        </form>
 
-            <nav className="align-self-center">
-              { this.state.results.length > 0 && pagination }
-            </nav>
+        <div className="d-flex flex-column flex-1 align-self-start mx-3">
+          <div className="mb-2 mx-1">
+            <h3>Search Results</h3>
+            <p>
+              { this.state.results.length > 0 ? this.state.results.length + ' result(s)' : '' }
+              { this.state.results.length > 0 ? `: Showing page ${page + 1} of ${totalPages}` : '' }
+            </p>
+          </div>
 
-            <div className="d-flex flex-wrap align-items-stretch my-2">
-              { results.length > 0 ? results : 'No results.' }
-            </div>
+          <nav className="align-self-center">
+            { this.state.results.length > 0 && pagination }
+          </nav>
+
+          <div className="d-flex flex-wrap align-items-stretch my-2">
+            { results.length > 0 ? results : 'No results.' }
           </div>
         </div>
-      </Sidebar>
+      </div>
     );
   }
 }
+
+SearchForm.propTypes = {
+  admin: PropTypes.bool
+};
+
+SearchForm.defaultProps = {
+  admin: false
+};
 
 export default SearchForm;

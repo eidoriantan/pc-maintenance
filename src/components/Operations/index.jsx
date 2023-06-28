@@ -61,18 +61,24 @@ class Operations extends React.Component {
         case 3:
           type = 'Updated';
           break;
+
+        case 4:
+          type = 'Removed';
+          break;
       }
 
       operations.push(
         <div className="box mb-3" key={i}>
           <h4 className="f-bold">{ type }</h4>
           <div className="op-date">Date { operation.operation !== 0 ? 'Started' : 'Encoded' }: { dateStarted.toLocaleString() }</div>
-          { operation.operation !== 0 && <div className="op-date">Date Ended: { dateEnded.toLocaleString() }</div> }
+          { operation.operation !== 0 && operation.operation !== 4 && <div className="op-date">Date Ended: { dateEnded.toLocaleString() }</div> }
 
-          <div className="mt-2">
-            <h5 className="f-bold">Description:</h5>
-            <p>{ operation.description }</p>
-          </div>
+          { operation.operation !== 4 &&
+            <div className="mt-2">
+              <h5 className="f-bold">Description:</h5>
+              <p>{ operation.description }</p>
+            </div>
+          }
         </div>
       );
     }

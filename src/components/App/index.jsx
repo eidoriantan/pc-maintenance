@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 
 import Login from '../Login';
 import Dashboard from '../Dashboard';
+import Users from '../Users';
 import UnitAdd from '../UnitAdd';
 import UnitView from '../UnitView';
 import UnitEdit from '../UnitEdit';
@@ -19,6 +20,8 @@ class App extends React.Component {
           <Route index element={<Dashboard />} />
 
           <Route path="login" element={<Login />} />
+
+          <Route path="users" element={<Users />} />
 
           <Route path="unit">
             <Route index element={<UnitAdd />} />

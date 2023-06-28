@@ -25,6 +25,7 @@ router.get('/', asyncWrap(async (req, res) => {
   const department = req.query.department
   const area = req.query.area
   const status = req.query.status
+  const removed = req.query.removed
 
   const conditions = []
   const values = []
@@ -41,6 +42,11 @@ router.get('/', asyncWrap(async (req, res) => {
   if (status) {
     conditions.push('`status`=?')
     values.push(status)
+  }
+
+  if (removed !== '') {
+    conditions.push('`removed`=?')
+    values.push(removed)
   }
 
   const baseQuery = 'SELECT `units`.*,`departments`.`name` AS `dept_name` FROM `units` JOIN `departments` ON `departments`.`id`=`units`.`dept_id`'
