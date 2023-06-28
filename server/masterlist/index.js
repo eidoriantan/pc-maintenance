@@ -122,9 +122,7 @@ router.get('/', asyncWrap(async (req, res) => {
       table: {
         type: PatchType.DOCUMENT,
         children: [
-          new Table({
-            rows: rows
-          })
+          new Table({ rows })
         ]
       }
     }
