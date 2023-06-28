@@ -51,20 +51,12 @@ router.get('/', asyncWrap(async (req, res) => {
 
   const baseQuery = 'SELECT `units`.*,`departments`.`name` AS `dept_name` FROM `units` JOIN `departments` ON `departments`.`id`=`units`.`dept_id`'
   const query = baseQuery + (conditions.length > 0 ? ' WHERE ' + conditions.join(' AND ') : '')
-  try {
-    const results = await database.query(query, values)
-    res.json({
-      success: true,
-      message: 'No errors.',
-      results
-    })
-  } catch (error) {
-    res.json({
-      success: false,
-      message: error.message,
-      results: null
-    })
-  }
+  const results = await database.query(query, values)
+  res.json({
+    success: true,
+    message: 'No errors.',
+    results
+  })
 }))
 
 module.exports = router
