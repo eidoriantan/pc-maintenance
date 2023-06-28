@@ -10,6 +10,7 @@ import selectize from '../../utils/selectize';
 
 import MagnifyingGlassIcon from '../../assets/svgs/magnifying-glass.svg';
 import PenIcon from '../../assets/svgs/pen.svg';
+import TrashIcon from '../../assets/svgs/trash.svg';
 import './style.scss';
 
 class SearchForm extends React.Component {
@@ -249,10 +250,12 @@ class SearchForm extends React.Component {
                 : (
                     <React.Fragment>
                       <NavLink to={`/unit/${unit.id}/edit`} target="_blank" className="btn mr-2 btn-light" role="button">
-                        <PenIcon width={17} height={17} fill="currentColor" className="fa mr-1" /> Edit
+                        <PenIcon width={16} height={16} fill="currentColor" className="fa mr-1" /> Edit
                       </NavLink>
                       { this.props.admin &&
-                      <button type="button" className="btn btn-danger mr-2" onClick={this.deleteUnit(unit.id)}>Delete</button>
+                      <button type="button" className="btn btn-danger mr-2" onClick={this.deleteUnit(unit.id)}>
+                        <TrashIcon width={16} height={16} fill="currentColor" className="fa mr-1" /> Delete
+                      </button>
                       }
                     </React.Fragment>
                   )
