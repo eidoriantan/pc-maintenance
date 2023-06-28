@@ -20,7 +20,7 @@ class UnitView extends React.Component {
       department: '',
       area: '',
       maker: '',
-      fixed: 0,
+      fixed: '',
       status: '',
       removed: 0,
       operations: []
@@ -102,7 +102,7 @@ class UnitView extends React.Component {
 
                   <tr>
                     <td>Fixed Asset:</td>
-                    <td>{ this.state.fixed ? 'Yes' : 'No' }</td>
+                    <td>{ this.state.fixed }</td>
                   </tr>
                 </tbody>
               </table>

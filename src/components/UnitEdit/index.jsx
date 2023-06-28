@@ -24,7 +24,7 @@ class UnitEdit extends React.Component {
       department: '',
       area: '',
       maker: '',
-      fixed: 0,
+      fixed: '',
       status: '',
       removed: 0,
       added: '',
@@ -111,7 +111,7 @@ class UnitEdit extends React.Component {
       department: this.state.department,
       area: this.state.area,
       maker: this.state.maker,
-      fixed: this.state.fixed ? 1 : 0,
+      fixed: this.state.fixed,
       status: this.state.status
     }, {
       headers: { Authorization: `Bearer ${token}` }
@@ -216,13 +216,13 @@ class UnitEdit extends React.Component {
                   </div>
 
                   <div className="form-group mb-3">
-                    <label htmlFor="unit-edit-maker">Maker/Supplier</label>
+                    <label htmlFor="unit-edit-maker">Maker/Supplier:</label>
                     <input type="text" id="unit-edit-maker" name="maker" value={this.state.maker} placeholder="Maker/Supplier" autoComplete="off" onChange={this.handleInput} required />
                   </div>
 
                   <div className="form-group form-check mb-3">
-                    <input type="checkbox" id="unit-edit-fixed" name="fixed" checked={this.state.fixed} onChange={this.handleInput} />
-                    <label htmlFor="unit-edit-fixed">Fixed Asset</label>
+                    <label htmlFor="unit-edit-fixed">Fixed Asset:</label>
+                    <input type="text" id="unit-edit-fixed" name="fixed" value={this.state.fixed} placeholder="Fixed Asset" autoComplete="off" onChange={this.handleInput} required />
                   </div>
                 </div>
               </div>

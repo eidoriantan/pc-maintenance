@@ -82,7 +82,7 @@ router.post('/:id', asyncWrap(async (req, res) => {
   const fixed = req.body.fixed
   const status = req.body.status
 
-  if (!department || !area || !status || !maker || typeof fixed !== 'number') {
+  if (!department || !area || !status || !maker || !fixed) {
     res.json({
       success: false,
       message: 'Invalid parameters'

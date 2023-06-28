@@ -23,7 +23,7 @@ class UnitAdd extends React.Component {
       status: '',
       quantity: 0,
       maker: '',
-      fixed: false
+      fixed: ''
     };
 
     this.handleInput = this.handleInput.bind(this);
@@ -99,7 +99,7 @@ class UnitAdd extends React.Component {
       status: this.state.status,
       quantity: this.state.quantity,
       maker: this.state.maker,
-      fixed: this.state.fixed ? 1 : 0
+      fixed: this.state.fixed
     }, {
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -118,7 +118,7 @@ class UnitAdd extends React.Component {
         status: '',
         quantity: 0,
         maker: '',
-        fixed: false
+        fixed: ''
       });
     } else {
       this.setState({
@@ -160,13 +160,13 @@ class UnitAdd extends React.Component {
               </div>
 
               <div className="form-group mb-2">
-                <label htmlFor="unit-add-maker">Maker/Supplier</label>
+                <label htmlFor="unit-add-maker">Maker/Supplier:</label>
                 <input type="text" id="unit-add-maker" name="maker" value={this.state.maker} placeholder="Maker/Supplier" autoComplete="off" onChange={this.handleInput} required />
               </div>
 
-              <div className="form-group form-check mb-2">
-                <input type="checkbox" id="unit-add-fixed" name="fixed" checked={this.state.fixed} onChange={this.handleInput} />
-                <label htmlFor="unit-add-fixed">Fixed Asset</label>
+              <div className="form-group mb-2">
+                <label htmlFor="unit-add-fixed">Fixed Asset:</label>
+                <input type="text" id="unit-add-fixed" name="fixed" value={this.state.fixed} placeholder="Fixed Asset" autoComplete="off" onChange={this.handleInput} required />
               </div>
             </div>
           </div>
