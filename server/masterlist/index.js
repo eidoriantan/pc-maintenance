@@ -2,15 +2,7 @@
 const fs = require('fs')
 const path = require('path')
 const express = require('express')
-const {
-  Paragraph,
-  patchDocument,
-  PatchType,
-  Table,
-  TableCell,
-  TableRow,
-  VerticalAlign
-} = require('docx')
+const { Paragraph, patchDocument, PatchType, Table, TableCell, TableRow, VerticalAlign } = require('docx')
 
 const database = require('../database')
 const formatDate = require('../utils/format-date')
