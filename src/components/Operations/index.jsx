@@ -92,7 +92,7 @@ class Operations extends React.Component {
 }
 
 Operations.propTypes = {
-  id: PropTypes.number,
+  id: PropTypes.string,
   className: PropTypes.string
 };
 

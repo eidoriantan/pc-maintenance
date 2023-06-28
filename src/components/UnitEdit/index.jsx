@@ -6,7 +6,8 @@ import axios from 'axios';
 import $ from 'jquery';
 
 import Sidebar from '../Sidebar';
-import { links } from '../DashboardUser/navigation';
+import { links as userLinks } from '../DashboardUser/navigation';
+import { links as adminLinks } from '../DashboardAdmin/navigation';
 import selectize from '../../utils/selectize';
 import PaperPlaneIcon from '../../assets/svgs/paper-plane.svg';
 import XIcon from '../../assets/svgs/x.svg';
@@ -174,13 +175,15 @@ class UnitEdit extends React.Component {
 
   render () {
     const token = localStorage.getItem('token');
-    if (token === null) return <Navigate to="/login" />;
+    const payloadStr = localStorage.getItem('payload');
+    if (token === null || payloadStr === null) return <Navigate to="/login" />;
 
+    const payload = JSON.parse(payloadStr);
     const unitId = this.props.params.id;
     if (this.state.removed === 1) return <Navigate to={`/unit/${unitId}`} />;
 
     return (
-      <Sidebar links={links}>
+      <Sidebar links={payload.type === 'admin' ? adminLinks : userLinks}>
         <div className="d-flex d-lg-block p-4">
           <div id="form-units-edit">
             <div className="d-flex flex-space-between mb-2">
@@ -286,7 +289,7 @@ class UnitEdit extends React.Component {
 
 UnitEdit.propTypes = {
   params: PropTypes.exact({
-    id: PropTypes.number.isRequired
+    id: PropTypes.string.isRequired
   })
 };
 

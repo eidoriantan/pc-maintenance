@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 
 import Sidebar from '../Sidebar';
-import { links } from '../DashboardUser/navigation';
+import { links as userLinks } from '../DashboardUser/navigation';
+import { links as adminLinks} from '../DashboardAdmin/navigation';
 import Operations from '../Operations';
 import XIcon from '../../assets/svgs/x.svg';
 import PenIcon from '../../assets/svgs/pen.svg';
@@ -51,11 +52,14 @@ class UnitView extends React.Component {
 
   render () {
     const token = localStorage.getItem('token');
-    if (token === null) return <Navigate to="/login" />;
+    const payloadStr = localStorage.getItem('payload');
+    if (token === null || payloadStr === null) return <Navigate to="/login" />;
 
+    const payload = JSON.parse(payloadStr);
     const unitId = this.props.params.id;
+
     return (
-      <Sidebar links={links}>
+      <Sidebar links={payload.type === 'admin' ? adminLinks : userLinks}>
         <div id="unit-view" className="m-4">
           <div className="d-flex flex-space-between mb-2">
             <h3>Viewing PC Unit ID: { unitId }</h3>
@@ -121,7 +125,7 @@ class UnitView extends React.Component {
 
 UnitView.propTypes = {
   params: PropTypes.exact({
-    id: PropTypes.number.isRequired
+    id: PropTypes.string.isRequired
   })
 };
 
