@@ -6,17 +6,16 @@ import axios from 'axios';
 import Pagination from '../Pagination';
 import Sidebar from '../Sidebar';
 import { links } from '../DashboardAdmin/navigation';
-import selectize from '../../utils/selectize';
 
-class Departments extends React.Component {
+class Colleges extends React.Component {
   constructor (props) {
     super(props);
 
     this.state = {
       error: '',
       adding: false,
-      department: '',
       college: '',
+      dean: '',
       abbr: '',
       results: [],
       pagination: {
@@ -31,7 +30,7 @@ class Departments extends React.Component {
     this.handleInput = this.handleInput.bind(this);
     this.changePage = this.changePage.bind(this);
     this.delete = this.delete.bind(this);
-    this.loadDepartments = this.loadDepartments.bind(this);
+    this.loadColleges = this.loadColleges.bind(this);
   }
 
   async handleAdd (event) {
@@ -47,8 +46,8 @@ class Departments extends React.Component {
     });
 
     const data = {
-      department: this.state.department,
       college: this.state.college,
+      dean: this.state.dean,
       abbr: this.state.abbr
     };
 
@@ -60,7 +59,7 @@ class Departments extends React.Component {
       this.setState({
         adding: false
       });
-      await this.loadDepartments();
+      await this.loadColleges();
     } else {
       this.setState({
         adding: false,
@@ -89,41 +88,19 @@ class Departments extends React.Component {
       const token = localStorage.getItem('token');
       if (token === null) return;
 
-      const response = await axios.delete(`/api/departments/${id}`, {
+      const response = await axios.delete(`/api/colleges/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
       if (response.data.success) {
-        await this.loadDepartments();
+        await this.loadColleges();
       } else {
-        window.alert('Unable to delete department');
+        window.alert('Unable to delete college');
       }
     }
   }
 
-  async loadDepartments () {
-    const token = localStorage.getItem('token');
-    if (token === null) return;
-
-    const deptRes = await axios.get('/api/departments', {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-
-    if (deptRes.data.success) {
-      this.setState({
-        results: deptRes.data.departments,
-        pagination: {
-          key: this.state.pagination.key + 1,
-          page: 0,
-          total: Math.ceil(deptRes.data.departments.length / this.limit)
-        }
-      });
-    } else {
-      window.alert('Unable to load departments');
-    }
-  }
-
-  async componentDidMount () {
+  async loadColleges () {
     const token = localStorage.getItem('token');
     if (token === null) return;
 
@@ -131,21 +108,22 @@ class Departments extends React.Component {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    if (!collegesRes.data.success) {
+    if (collegesRes.data.success) {
+      this.setState({
+        results: collegesRes.data.colleges,
+        pagination: {
+          key: this.state.pagination.key + 1,
+          page: 0,
+          total: Math.ceil(collegesRes.data.colleges.length / this.limit)
+        }
+      });
+    } else {
       window.alert('Unable to load colleges');
-      return;
     }
+  }
 
-    selectize('#add-college', collegesRes.data.colleges.map(college => {
-      return {
-        text: college.name,
-        value: college.id,
-        disabled: false,
-        $order: college.id
-      }
-    }), this);
-
-    await this.loadDepartments();
+  async componentDidMount () {
+    await this.loadColleges();
   }
 
   render () {
@@ -165,33 +143,33 @@ class Departments extends React.Component {
     const offset = page * limit;
 
     for (let i = offset; i < this.state.results.length && (i - offset) < limit; i++) {
-      const department = this.state.results[i];
-      if (typeof department === 'undefined') break;
+      const college = this.state.results[i];
+      if (typeof college === 'undefined') break;
 
       results.push(
         <div className="details-container box m-3" key={i}>
           <table className="details-table">
             <tbody>
               <tr>
-                <td>Department:</td>
-                <td>{ department.name }</td>
+                <td>College:</td>
+                <td>{ college.name }</td>
               </tr>
 
               <tr>
-                <td>College:</td>
-                <td>{ department.college_name }</td>
+                <td>Dean:</td>
+                <td>{ college.dean }</td>
               </tr>
 
               <tr>
                 <td>Abbreviation:</td>
-                <td>{ department.abbr }</td>
+                <td>{ college.abbr }</td>
               </tr>
             </tbody>
           </table>
 
           <div className="flex-1"></div>
           <div className="mt-2">
-            <button type="button" className="btn" onClick={this.delete(department.id)}>Delete</button>
+            <button type="button" className="btn" onClick={this.delete(college.id)}>Delete</button>
           </div>
         </div>
       );
@@ -200,11 +178,11 @@ class Departments extends React.Component {
     return (
       <Sidebar links={links}>
         <div className="d-flex flex-baseline d-lg-block p-4">
-          <form action="/api/departments" method="post" className="box mb-3 p-4" onSubmit={this.handleAdd}>
-            <h4>Add Department</h4>
+          <form action="/api/colleges" method="post" className="box mb-3 p-4" onSubmit={this.handleAdd}>
+            <h4>Add College</h4>
             <div className="form-group mb-2">
-              <label htmlFor="add-department">Name:</label>
-              <input type="text" id="add-department" name="department" value={this.state.department} autoComplete="off" onChange={this.handleInput} />
+              <label htmlFor="add-college">Name:</label>
+              <input type="text" id="add-college" name="college" value={this.state.college} autoComplete="off" onChange={this.handleInput} />
             </div>
 
             <div className="form-group mb-2">
@@ -213,22 +191,22 @@ class Departments extends React.Component {
             </div>
 
             <div className="form-group mb-2">
-              <label htmlFor="add-college">College:</label>
-              <select id="add-college" name="college" defaultValue="" required data-selectize></select>
+              <label htmlFor="add-dean">Dean:</label>
+              <input type="text" id="add-dean" name="dean" value={this.state.dean} autoComplete="off" onChange={this.handleInput} />
             </div>
 
             { this.state.error !== '' && <div className="box box-error d-block mb-2">{ this.state.error }</div> }
             
             <div className="form-actions">
               <button type="submit" className="btn" disabled={this.state.adding}>
-                { this.state.adding ? 'Adding...' : 'Add New Department' }
+                { this.state.adding ? 'Adding...' : 'Add New College' }
               </button>
             </div>
           </form>
 
           <div className="d-flex flex-column flex-1 align-self-start mx-3">
             <div className="mb-2 mx-1">
-              <h3>Departments</h3>
+              <h3>Colleges</h3>
               <p>
                 { this.state.results.length > 0 ? this.state.results.length + ' result(s)' : '' }
                 { this.state.results.length > 0 ? `: Showing page ${page + 1} of ${totalPages}` : '' }
@@ -249,4 +227,4 @@ class Departments extends React.Component {
   }
 }
 
-export default Departments;
+export default Colleges;

@@ -9,6 +9,7 @@ import UnitAdd from '../UnitAdd';
 import UnitView from '../UnitView';
 import UnitEdit from '../UnitEdit';
 import Departments from '../Departments';
+import Colleges from '../Colleges';
 import SignOut from '../SignOut';
 import NotFound from '../NotFound';
 
@@ -30,6 +31,8 @@ class App extends React.Component {
           </Route>
 
           <Route path="departments" element={<Departments />} />
+
+          <Route path="colleges" element={<Colleges />} />
 
           <Route path="signout" element={<SignOut />} />
           <Route path="*" element={<NotFound />} />

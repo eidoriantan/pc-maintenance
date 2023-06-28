@@ -22,11 +22,11 @@ router.get('/', asyncWrap(async (req, res) => {
     })
   }
 
-  const departments = await database.query('SELECT `departments`.*, `colleges`.`name` AS `college_name` FROM `departments` JOIN `colleges` ON `colleges`.`id` = `departments`.`college`')
+  const colleges = await database.query('SELECT * FROM `colleges`')
   res.json({
     success: true,
     message: 'No errors.',
-    departments
+    colleges
   })
 }))
 
@@ -47,18 +47,18 @@ router.post('/', asyncWrap(async (req, res) => {
     })
   }
 
-  const department = req.body.department
   const college = req.body.college
   const abbr = req.body.abbr
-  const departments = await database.query('SELECT * FROM `departments` WHERE `abbr`=?', [abbr])
-  if (departments.length > 0) {
+  const dean = req.body.dean
+  const colleges = await database.query('SELECT * FROM `colleges` WHERE `abbr`=?', [abbr])
+  if (colleges.length > 0) {
     return res.json({
       success: false,
-      message: 'Department abbr already exists'
+      message: 'College abbr already exists'
     })
   }
 
-  await database.query('INSERT INTO `departments` (`name`, `college`, `abbr`) VALUES (?, ?, ?)', [department, college, abbr])
+  await database.query('INSERT INTO `colleges` (`name`, `abbr`, `dean`) VALUES (?, ?, ?)', [college, abbr, dean])
   res.json({
     success: true,
     message: 'No errors.'
@@ -83,7 +83,7 @@ router.delete('/:id', asyncWrap(async (req, res) => {
   }
 
   const id = req.params.id
-  await database.query('DELETE FROM `departments` WHERE `id`=?', [id])
+  await database.query('DELETE FROM `colleges` WHERE `id`=?', [id])
   res.json({
     success: true,
     message: 'No errors.'
