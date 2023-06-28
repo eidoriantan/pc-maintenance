@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 07, 2023 at 04:29 AM
--- Server version: 8.0.31
--- PHP Version: 8.0.26
+-- Generation Time: Jun 20, 2023 at 11:12 AM
+-- Server version: 8.0.27
+-- PHP Version: 7.4.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `password` varchar(72) NOT NULL COMMENT 'Hashed password',
   `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'User added date',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -45,8 +45,8 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 DROP TABLE IF EXISTS `departments`;
 CREATE TABLE IF NOT EXISTS `departments` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Department ID',
-  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'Department Name',
-  `abbr` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'Department Abbreviation',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'Department Name',
+  `abbr` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'Department Abbreviation',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
@@ -78,11 +78,13 @@ DROP TABLE IF EXISTS `units`;
 CREATE TABLE IF NOT EXISTS `units` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'PC Unit ID',
   `dept_id` int UNSIGNED NOT NULL COMMENT 'Department ID',
-  `area` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'Department Area',
+  `area` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'Department Area',
   `status` varchar(255) NOT NULL COMMENT 'PC Unit Status',
+  `added_by` int NOT NULL COMMENT 'Added by',
   `date_encoded` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Date encoded to system',
   PRIMARY KEY (`id`),
-  KEY `OFFICE_FK_1` (`dept_id`)
+  KEY `OFFICE_FK_1` (`dept_id`),
+  KEY `USER_FK_1` (`added_by`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
@@ -99,7 +101,8 @@ ALTER TABLE `operations`
 -- Constraints for table `units`
 --
 ALTER TABLE `units`
-  ADD CONSTRAINT `OFFICE_FK_1` FOREIGN KEY (`dept_id`) REFERENCES `departments` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ADD CONSTRAINT `OFFICE_FK_1` FOREIGN KEY (`dept_id`) REFERENCES `departments` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `USER_FK_1` FOREIGN KEY (`added_by`) REFERENCES `accounts` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

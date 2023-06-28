@@ -31,6 +31,67 @@
   padding: 8px;
 }
 
+#alerts-container {
+  position: relative;
+
+  #alerts-toggle {
+    cursor: pointer;
+  }
+
+  #alerts {
+    display: none;
+    position: absolute;
+    top: 30px;
+    left: -230px;
+    margin: 0;
+    width: 250px;
+    max-height: 500px;
+    overflow-y: scroll;
+    z-index: 1000;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    list-style-type: none;
+
+    &.active {
+      display: block;
+    }
+
+    *:first-child {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    *:last-child {
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+
+    li {
+      padding: 8px 12px;
+      border-bottom: 1px solid $border-color;
+      background-color: lighten($primary-color, 7.5%);
+      color: $primary-text-color;
+      cursor: pointer;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+
+      &:hover {
+        background-color: $primary-color;
+      }
+
+      p {
+        font-size: 0.8em;
+      }
+    }
+
+    a {
+      color: inherit;
+    }
+  }
+}
+
 @media (max-width: map.get($breakpoints, "md")) {
   .header { padding: 0 16px; }
 
