@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 28, 2023 at 10:31 AM
+-- Generation Time: Jun 28, 2023 at 02:12 PM
 -- Server version: 8.0.27
 -- PHP Version: 7.4.26
 
@@ -39,15 +39,32 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `colleges`
+--
+
+DROP TABLE IF EXISTS `colleges`;
+CREATE TABLE IF NOT EXISTS `colleges` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'College ID',
+  `name` varchar(255) NOT NULL COMMENT 'College Name',
+  `abbr` varchar(255) NOT NULL COMMENT 'College Abbreviation',
+  `dean` varchar(255) NOT NULL COMMENT 'College Dean''s Name',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `departments`
 --
 
 DROP TABLE IF EXISTS `departments`;
 CREATE TABLE IF NOT EXISTS `departments` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Department ID',
+  `college` int NOT NULL COMMENT 'College ID',
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'Department Name',
   `abbr` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'Department Abbreviation',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `COLLEGE_FK_1` (`college`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
@@ -79,6 +96,8 @@ CREATE TABLE IF NOT EXISTS `units` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'PC Unit ID',
   `dept_id` int UNSIGNED NOT NULL COMMENT 'Department ID',
   `area` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'Department Area',
+  `maker` varchar(255) NOT NULL COMMENT 'Supplier/maker',
+  `fixed` varchar(255) NOT NULL COMMENT 'Fixed asset',
   `status` varchar(255) NOT NULL COMMENT 'PC Unit Status',
   `removed` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Unit was removed',
   `added_by` int NOT NULL COMMENT 'Added by',
@@ -91,6 +110,12 @@ CREATE TABLE IF NOT EXISTS `units` (
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `departments`
+--
+ALTER TABLE `departments`
+  ADD CONSTRAINT `COLLEGE_FK_1` FOREIGN KEY (`college`) REFERENCES `colleges` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `operations`
