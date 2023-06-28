@@ -38,6 +38,7 @@ class SearchForm extends React.Component {
     this.resetForm = this.resetForm.bind(this);
     this.changePage = this.changePage.bind(this);
     this.deleteUnit = this.deleteUnit.bind(this);
+    this.viewMasterlist = this.viewMasterlist.bind(this);
   }
 
   async componentDidMount () {
@@ -200,6 +201,19 @@ class SearchForm extends React.Component {
     }
   }
 
+  viewMasterlist (event) {
+    event.preventDefault();
+
+    const query = new URLSearchParams();
+    query.set('department', this.state.department);
+    query.set('area', this.state.area);
+    query.set('status', this.state.status);
+    query.set('removed', this.state.removed);
+
+    const url = '/api/masterlist?' + query.toString();
+    window.open(url, '_blank');
+  }
+
   render () {
     const token = localStorage.getItem('token');
     if (token === null) return <Navigate to="/login" />;
@@ -292,12 +306,14 @@ class SearchForm extends React.Component {
           { this.state.error !== '' && <div className="box box-error d-block mb-2">{ this.state.error }</div> }
 
           <div className="form-actions">
-            <button type="submit" className="btn" disabled={this.state.searching}>
-              <MagnifyingGlassIcon width={17} height={17} fill="currentColor" className="fa mr-2" />
+            <button type="submit" className="btn mb-2" disabled={this.state.searching}>
+              <MagnifyingGlassIcon width={16} height={16} fill="currentColor" className="fa mr-2" />
               { this.state.searching ? 'Searching...' : 'Search' }
             </button>
 
-            <button type="reset" className="btn btn-light" onClick={this.resetForm}>Reset</button>
+            <button type="reset" className="btn btn-light mb-2" onClick={this.resetForm}>Reset</button>
+
+            <button type="button" className="btn btn-light" onClick={this.viewMasterlist}>View Masterlist</button>
           </div>
         </form>
 

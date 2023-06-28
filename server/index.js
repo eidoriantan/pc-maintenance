@@ -12,6 +12,7 @@ const units = require('./units')
 const operations = require('./operations')
 const search = require('./search')
 const notifications = require('./notifications')
+const masterlist = require('./masterlist')
 
 const app = express()
 const port = process.env.PORT || 3001
@@ -27,6 +28,7 @@ app.use('/api/units', units)
 app.use('/api/operations', operations)
 app.use('/api/search', search)
 app.use('/api/notifications', notifications)
+app.use('/api/masterlist', masterlist)
 
 app.use((err, req, res, next) => {
   console.error(err)
