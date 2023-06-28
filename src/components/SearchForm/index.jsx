@@ -246,19 +246,19 @@ class SearchForm extends React.Component {
           <div className="mt-2">
             <NavLink to={`/unit/${unit.id}`} target="_blank" className="btn mr-2" role="button">View</NavLink>
             { unit.removed
-                ? 'Removed'
-                : (
-                    <React.Fragment>
-                      <NavLink to={`/unit/${unit.id}/edit`} target="_blank" className="btn mr-2 btn-light" role="button">
-                        <PenIcon width={16} height={16} fill="currentColor" className="fa mr-1" /> Edit
-                      </NavLink>
-                      { this.props.admin &&
-                      <button type="button" className="btn btn-danger mr-2" onClick={this.deleteUnit(unit.id)}>
-                        <TrashIcon width={16} height={16} fill="currentColor" className="fa mr-1" /> Delete
-                      </button>
-                      }
-                    </React.Fragment>
-                  )
+              ? 'Removed'
+              : (
+                  <React.Fragment>
+                    <NavLink to={`/unit/${unit.id}/edit`} target="_blank" className="btn mr-2 btn-light" role="button">
+                      <PenIcon width={16} height={16} fill="currentColor" className="fa mr-1" /> Edit
+                    </NavLink>
+                    { this.props.admin &&
+                    <button type="button" className="btn btn-danger mr-2" onClick={this.deleteUnit(unit.id)}>
+                      <TrashIcon width={16} height={16} fill="currentColor" className="fa mr-1" /> Delete
+                    </button>
+                    }
+                  </React.Fragment>
+                )
             }
           </div>
         </div>
