@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 28, 2023 at 02:12 PM
+-- Generation Time: Jun 29, 2023 at 01:49 PM
 -- Server version: 8.0.27
 -- PHP Version: 7.4.26
 
@@ -79,6 +79,10 @@ CREATE TABLE IF NOT EXISTS `operations` (
   `unit_id` int UNSIGNED NOT NULL COMMENT 'Unit ID',
   `operation` int UNSIGNED NOT NULL COMMENT 'Operation Done: 1 - Clean, 2 - Repair, 3 - Update, 4- Removed',
   `description` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'Operation description and details',
+  `tools` text NOT NULL COMMENT 'Tools/Equipment Required',
+  `remarks` text NOT NULL COMMENT 'Remarks',
+  `personnel` varchar(255) NOT NULL COMMENT 'Name of Maintenance Personnel',
+  `incharge` varchar(255) NOT NULL COMMENT 'Department/Teacher In-Charge',
   `date_start` datetime NOT NULL COMMENT 'Starting date of the operation',
   `date_end` datetime NOT NULL COMMENT 'Ending date of the operation',
   PRIMARY KEY (`id`),
