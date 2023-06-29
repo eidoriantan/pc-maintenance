@@ -2,10 +2,11 @@
 const fs = require('fs')
 const path = require('path')
 const express = require('express')
-const { Paragraph, patchDocument, PatchType, Table, TableCell, TableRow, VerticalAlign } = require('docx')
+const { Paragraph, patchDocument, PatchType, TextRun } = require('docx')
 
 const database = require('../database')
 const formatDate = require('../utils/format-date')
+const { formatDateSQL } = require('../utils/format-date')
 const asyncWrap = require('../utils/async-wrap')
 const router = express.Router()
 
@@ -14,8 +15,13 @@ if (!fs.existsSync(dataPath)) fs.mkdirSync(dataPath)
 
 router.get('/', asyncWrap(async (req, res) => {
   const unitId = req.query.id
+  const query = 'SELECT `units`.*, `departments`.`name` AS `dept_name`, `colleges`.`dean` ' +
+    'FROM `units` ' +
+    'JOIN `departments` ON `departments`.`id` = `units`.`dept_id` ' +
+    'JOIN `colleges` ON `colleges`.`id` = `departments`.`college` ' +
+    'WHERE `units`.`id`=?'
 
-  const units = await database.query('SELECT `units`.*,`departments`.`name` AS `dept_name`,`colleges`.`dean` FROM `units` JOIN `departments` ON `departments`.`id`=`units`.`dept_id` JOIN `colleges` ON `colleges`.`id`=`departments`.`college` WHERE `units`.`id`=?', [unitId])
+  const units = await database.query(query, [unitId])
   if (units.length === 0) {
     res.json({
       success: false,
@@ -26,10 +32,10 @@ router.get('/', asyncWrap(async (req, res) => {
 
   const unit = units[0]
   const now = new Date()
-  const firstDay = formatDate(now)
-  const firstDate = new Date(firstDay.replace(/([0-9]{2},)/, '01'))
+  const firstDate = new Date(formatDate(now).replace(/([0-9]{2},)/, '01'))
+  const firstSQL = formatDateSQL(firstDate)
 
-  const operations = await database.query('SELECT * FROM `operations` WHERE `unit_id`=? AND `date_end` BETWEEN ? AND NOW()', [unit.id, firstDate])
+  const operations = await database.query('SELECT * FROM `operations` WHERE `unit_id`=? AND `date_end` BETWEEN ? AND NOW()', [unit.id, firstSQL])
   const actionTaken = []
   const tools = []
   const remarks = []
@@ -53,48 +59,83 @@ router.get('/', asyncWrap(async (req, res) => {
   const patched = await patchDocument(docx, {
     patches: {
       date: {
-        type: PatchType.DOCUMENT,
-        children: [new Paragraph(now.toString())]
+        type: PatchType.PARAGRAPH,
+        children: [
+          new TextRun({
+            text: formatDate(now),
+            underline: {}
+          })
+        ]
       },
       control_no: {
-        type: PatchType.DOCUMENT,
-        children: [new Paragraph(unit.id.toString())]
+        type: PatchType.PARAGRAPH,
+        children: [
+          new TextRun({
+            text: unit.id.toString(),
+            underline: {}
+          })
+        ]
       },
       department: {
-        type: PatchType.DOCUMENT,
-        children: [new Paragraph(unit.dept_name)]
+        type: PatchType.PARAGRAPH,
+        children: [
+          new TextRun({
+            text: unit.dept_name,
+            underline: {}
+          })
+        ]
       },
       area: {
-        type: PatchType.DOCUMENT,
-        children: [new Paragraph(unit.area)]
+        type: PatchType.PARAGRAPH,
+        children: [
+          new TextRun({
+            text: unit.area,
+            underline: {}
+          })
+        ]
       },
       name: {
-        type: PatchType.DOCUMENT,
-        children: [new Paragraph(`PC Unit #${unit.id.toString()}`)]
+        type: PatchType.PARAGRAPH,
+        children: [new TextRun(`PC Unit #${unit.id.toString()}`)]
       },
       action_taken: {
         type: PatchType.DOCUMENT,
-        children: [new Paragraph(actionTaken.join('\r\n'))]
+        children: actionTaken.map(action => new Paragraph(action))
       },
       tools: {
         type: PatchType.DOCUMENT,
-        children: [new Paragraph(tools.join('\r\n'))]
+        children: tools.map(tool => new Paragraph(tool))
       },
       remarks: {
         type: PatchType.DOCUMENT,
-        children: [new Paragraph(remarks.join('\r\n'))]
+        children: remarks.map(remark => new Paragraph(remark))
       },
       personnel: {
-        type: PatchType.DOCUMENT,
-        children: [new Paragraph(personnel)]
+        type: PatchType.PARAGRAPH,
+        children: [
+          new TextRun({
+            text: personnel,
+            underline: {}
+          })
+        ]
       },
       incharge: {
-        type: PatchType.DOCUMENT,
-        children: [new Paragraph(incharge)]
+        type: PatchType.PARAGRAPH,
+        children: [
+          new TextRun({
+            text: incharge,
+            underline: {}
+          })
+        ]
       },
       dean: {
-        type: PatchType.DOCUMENT,
-        children: [new Paragraph(unit.dean)]
+        type: PatchType.PARAGRAPH,
+        children: [
+          new TextRun({
+            text: unit.dean,
+            underline: {}
+          })
+        ]
       }
     }
   })
