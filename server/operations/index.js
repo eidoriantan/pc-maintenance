@@ -35,7 +35,11 @@ router.get('/', asyncWrap(async (req, res) => {
       department: unit.dept_name,
       area: unit.area,
       operation: 0,
+      personnel: '',
+      incharge: '',
       description: 'Unit was added to database.',
+      tools: '',
+      remarks: '',
       date_start: unit.date_encoded,
       date_end: unit.date_encoded
     })
@@ -73,11 +77,15 @@ router.post('/', asyncWrap(async (req, res) => {
 
   const unitId = req.body.id
   const operation = req.body.operation
+  const personnel = req.body.personnel
+  const incharge = req.body.incharge
   const dateStart = req.body['date-start']
   const dateEnd = req.body['date-end']
   const description = req.body.description
+  const tools = req.body.tools
+  const remarks = req.body.remarks
 
-  if (!unitId || !operation || !dateStart || !dateEnd) {
+  if (!unitId || !operation || !personnel || !incharge || !dateStart || !dateEnd || !tools || !remarks) {
     res.json({
       success: false,
       message: 'Invalid parameters'
@@ -102,8 +110,8 @@ router.post('/', asyncWrap(async (req, res) => {
     return
   }
 
-  const query = 'INSERT INTO `operations` (`unit_id`,`operation`,`description`,`date_start`,`date_end`) VALUES (?, ?, ?, ?, ?)'
-  await database.query(query, [unitId, operation, description, dateStart, dateEnd])
+  const query = 'INSERT INTO `operations` (`unit_id`,`operation`,`personnel`,`incharge`,`description`,`tools`,`remarks`,`date_start`,`date_end`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+  await database.query(query, [unitId, operation, personnel, incharge, description, tools, remarks, dateStart, dateEnd])
   res.json({
     success: true,
     message: 'No errors.'

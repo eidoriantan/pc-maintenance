@@ -25,6 +25,15 @@ class UnitView extends React.Component {
       removed: 0,
       operations: []
     };
+
+    this.viewReport = this.viewReport.bind(this);
+  }
+
+  viewReport (event) {
+    event.preventDefault();
+
+    const unitId = this.props.params.id;
+    window.open('/api/monthly?id=' + unitId, '_blank');
   }
 
   async componentDidMount () {
@@ -106,6 +115,8 @@ class UnitView extends React.Component {
                   </tr>
                 </tbody>
               </table>
+
+              <button type="button" className="btn btn-primary mb-2" onClick={this.viewReport}>View Monthly Report</button>
             </div>
 
             <div className="flex-1 mx-4">

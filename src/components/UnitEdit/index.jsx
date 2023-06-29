@@ -31,9 +31,13 @@ class UnitEdit extends React.Component {
       addingError: '',
       adding: false,
       operation: '',
+      personnel: '',
+      incharge: '',
       'date-start': '',
       'date-end': '',
-      description: ''
+      description: '',
+      tools: '',
+      remarks: ''
     };
 
     this.handleInput = this.handleInput.bind(this);
@@ -147,9 +151,13 @@ class UnitEdit extends React.Component {
     const response = await axios.post(form.action, {
       id: this.props.params.id,
       operation: this.state.operation,
+      personnel: this.state.personnel,
+      incharge: this.state.incharge,
       'date-start': this.state['date-start'],
       'date-end': this.state['date-end'],
-      description: this.state.description
+      description: this.state.description,
+      tools: this.state.tools,
+      remarks: this.state.remarks
     }, {
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -159,9 +167,13 @@ class UnitEdit extends React.Component {
       $('#unit-addop-operation').val('');
       this.setState({
         operation: '',
+        personnel: '',
+        incharge: '',
         'date-start': '',
         'date-end': '',
         description: '',
+        tools: '',
+        remarks: '',
         adding: false,
         added: 'Operation was added successfully'
       });
@@ -255,6 +267,16 @@ class UnitEdit extends React.Component {
               </div>
 
               <div className="form-group mb-2">
+                <label htmlFor="unit-addop-personnel">Maintenance Personnel:</label>
+                <input type="text" id="unit-addop-personnel" name="personnel" value={this.state.personnel} onChange={this.handleInput} required />
+              </div>
+
+              <div className="form-group mb-2">
+                <label htmlFor="unit-addop-incharge">Department/Teacher In-Charge:</label>
+                <input type="text" id="unit-addop-incharge" name="incharge" value={this.state.incharge} onChange={this.handleInput} required />
+              </div>
+
+              <div className="form-group mb-2">
                 <label htmlFor="unit-addop-date-start">Datetime Start:</label>
                 <input type="datetime-local" id="unit-addop-date-start" name="date-start" value={this.state['date-start']} required onChange={this.handleInput} />
               </div>
@@ -265,8 +287,18 @@ class UnitEdit extends React.Component {
               </div>
 
               <div className="form-group mb-2">
-                <label htmlFor="unit-addop-description">Description:</label>
-                <textarea id="unit-addop-description" name="description" rows="5" value={this.state.description} onChange={this.handleInput}></textarea>
+                <label htmlFor="unit-addop-description">Actions Taken:</label>
+                <textarea id="unit-addop-description" name="description" rows="3" value={this.state.description} onChange={this.handleInput}></textarea>
+              </div>
+
+              <div className="form-group mb-2">
+                <label htmlFor="unit-addop-tools">Tools/Equipment Required:</label>
+                <textarea id="unit-addop-tools" name="tools" rows="3" value={this.state.tools} onChange={this.handleInput}></textarea>
+              </div>
+
+              <div className="form-group mb-2">
+                <label htmlFor="unit-addop-remarks">Remarks:</label>
+                <textarea id="unit-addop-remarks" name="remarks" rows="3" value={this.state.remarks} onChange={this.handleInput}></textarea>
               </div>
             </div>
 
