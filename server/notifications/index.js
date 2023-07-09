@@ -54,12 +54,10 @@ router.get('/', asyncWrap(async (req, res) => {
     const operations = await database.query('SELECT * FROM `operations` WHERE `unit_id`=? ORDER BY `date_end` DESC', [unit.id])
     const time = Date.now()
     const cleans = []
-    const updates = []
 
     for (let j = 0; j < operations.length; j++) {
       const operation = operations[j]
       if (operation.operation === 1) cleans.push(operation)
-      if (operation.operation === 3) updates.push(operation)
     }
 
     const encodedDate = new Date(unit.date_encoded)
@@ -73,16 +71,6 @@ router.get('/', asyncWrap(async (req, res) => {
         unitId: unit.id,
         title: `Unit #${unit.id} needs cleaning!`,
         details: `Unit #${unit.id} of department "${unit.dept_name} (${unit.dept_abbr})" needs cleaning`
-      })
-    }
-
-    const latestUpdateDate = new Date(updates.length > 0 ? updates[0].date_end : unit.date_encoded)
-    const latestUpdate = latestUpdateDate.getTime()
-    if (time - latestUpdate > daysNotify) {
-      notifications.push({
-        unitId: unit.id,
-        title: `Unit #${unit.id} needs updating!`,
-        details: `Unit #${unit.id} of department "${unit.dept_name} (${unit.dept_abbr})" needs updating`
       })
     }
   }
